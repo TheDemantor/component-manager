@@ -9,7 +9,7 @@ const getComponents = asyncHandler(async (req, res) => {
 
   const keyword =  req.query.keyword ? (
     {
-      name: {
+      component_name: {
         $regex: req.query.keyword,
         $options: 'i',
       },
@@ -85,7 +85,7 @@ const updateComponent = asyncHandler(async (req, res) => {
 
 // @desc    Delete a Component
 // @route   DELETE /api/Components/:id
-// @access  Private/Admin
+// @access  Public
 const deleteComponent = asyncHandler(async (req, res) => {
   const component = await Component.findById(req.params.id);
 
@@ -98,51 +98,128 @@ const deleteComponent = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create new review
-// @route   POST /api/Components/:id/reviews
-// @access  Private
-const createComponentRecommendation = asyncHandler(async (req, res) => {
+// @desc    Create new recommendation
+// @route   POST /api/Components/:id/recommendation
+// @access  public
+const createRecommendation = asyncHandler(async (req, res) => {
   const {
-    rating,
-    comment,
-    user
+    name,
+    mail,
+    recommendation
   } = req.body;
 
   const component = await Component.findById(req.params.id);
 
   if (component) {
-    const alreadyReviewed = component.review.find(
-      // (r) => r.user.toString() === req.user._id.toString()
-      (r) => r.user.toString() === user._id.toString()
-    );
+    const researched = component.status === "research";
 
-    if (alreadyReviewed) {
+    if (!researched) {
       res.status(400);
-      throw new Error('Component already reviewed');
+      throw new Error('Currently component is not being reserched');
     }
 
-    const review = {
-      // name: req.user.name,
-      name: user.name,
-      rating: Number(rating),
-      comment,
-      user: user._id,
-      // user: req.user._id,
+    const recommendation_msg = {
+      researcher_name: name,
+      researcher_mail: mail,
+      recommendation: recommendation,
     };
 
-    component.review.push(review);
-
-    component.numReviews = component.review.length;
-
-    component.rating =
-    component.review.reduce((acc, item) => item.rating + acc, 0) /
-    component.review.length;
+    component.recommendation.push(recommendation_msg);
 
     await component.save();
-    res.status(201).json({ message: 'Review added' });
+    res.status(201).json({ message: 'Recommendation added'});
   } else {
     res.status(404);
     throw new Error('Component not found');
+  }
+});
+
+// @desc    Create new review
+// @route   POST /api/Components/:id/reviews
+// @access  Private
+const createChild = asyncHandler(async (req, res) => {
+  const {id,weight} = req.body;
+  const par=req.params.id;
+  const component = await Component.findById(par);
+  const child = await Component.findById(id);
+  const exist = await component.component_child.find(
+    (c) => c.child_id.toString() === id.toString()
+    );
+    if(exist){
+      res.status(400);
+      throw new Error('Already a child to this parent.');   
+    }
+    if (component ) {
+      if(child){
+        
+        child.parent_id=par;
+      // console.log(child.parent_id , par);
+      const new_child = {
+        child_id: id,
+        child_weight_in_parent_quality_index: weight,
+      };
+
+      component.component_child.push(new_child);
+
+      await component.save();
+      await child.save();
+      res.status(201).json({ message: 'Child added to parent successfully.'});
+
+    } else{
+      res.status(404);
+      throw new Error('Child component not found.');
+    }
+    
+  } else {
+    res.status(404);
+    throw new Error('Component not found');
+  }
+});
+
+// @desc    Update a Child
+// @route   PUT /api/child/:id
+// @access  Public
+const updateChild = asyncHandler(async (req, res) => {
+  const {id, weight} = req.body;
+
+  const component = await Component.findById(req.params.id);
+  const child = await component.component_child.findIndex((obj => obj.child_id == id));
+  // console.log(child);
+
+  if(child!=-1){
+    component.component_child[child].child_weight_in_parent_quality_index=weight;
+    await component.save();
+    res.json({ message: 'Component weight updated' });
+  }
+  else {
+    res.status(404);
+    throw new Error('Child not found');
+  }
+});
+
+// @desc    Delete a Component
+// @route   DELETE /api/Components/:id
+// @access  Public
+const deleteChild = asyncHandler(async (req, res) => {
+  const {id} = req.body;
+
+  const component = await Component.findById(req.params.id);
+  const child = await Component.findById(id);
+  const exist = await component.component_child.find(
+    (c) => c.child_id.toString() === id.toString()
+  );
+  if(exist){
+    child.parent_id="";
+    await child.save();
+    
+    component.component_child = component.component_child.filter(item => (item.child_id != id ));
+    // console.log(id, component.component_child.filter(item => (item.child_id != id )))
+    await component.save();
+    res.json({ message: 'Child component removed from parent.' });
+  }
+  else {
+    res.status(404);
+    throw new Error('Child not found');
   }
 });
 
@@ -156,5 +233,8 @@ export {
   createComponent,
   updateComponent,
   deleteComponent,
-  createComponentRecommendation,
+  createRecommendation,
+  createChild,
+  updateChild,
+  deleteChild
 }

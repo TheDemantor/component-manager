@@ -31,7 +31,8 @@ const recommendationSchema = new mongoose.Schema(
       required: true,    
     },
     status:{
-      type: Boolean
+      type: Boolean,
+      default: false
     }
   },
   {
@@ -64,7 +65,7 @@ const componentSchema = new mongoose.Schema(
     },
     parent_id: {
       type: String,
-      default: '000'
+      default: ''
     },
     status: {
       type: String,
