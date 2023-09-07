@@ -63,7 +63,8 @@ const componentSchema = new mongoose.Schema(
       required: true,
     },
     parent_id: {
-      type: Number,
+      type: String,
+      default: '000'
     },
     status: {
       type: String,

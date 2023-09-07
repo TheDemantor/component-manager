@@ -8,6 +8,10 @@ connectDB();    //Connect to mongoDB
 
 const app = express();
 
+//BODY PARSER MIDDLEWARES
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/api/components', componentRoutes);
 
 app.get('/', (req, res) => {

@@ -35,7 +35,7 @@ const getComponentById = asyncHandler(async (req, res) => {
 
 // @desc    Create a Component
 // @route   POST /api/Components
-// @access  Private/Admin
+// @access  Public
 const createComponent = asyncHandler(async (req, res) => {
   // console.log("Reached cont")
   const component = new Component({
@@ -53,21 +53,20 @@ const createComponent = asyncHandler(async (req, res) => {
 
 // @desc    Update a Component
 // @route   PUT /api/components/:id
-// @access  Private/Admin
+// @access  Public
 const updateComponent = asyncHandler(async (req, res) => {
-  const { name, pricing, description, image, brand, category, in_stock, cloth } =
+  // console.log(req.body);
+  const { name, image, description, qi, parent_id, status } =
     req.body;
 
   const component = await Component.findById(req.params.id);
   if (component) {
-    component.name = name;
+    component.component_name = name;
     component.image = image;
-    component.cloth = cloth;
-    component.pricing = pricing;
     component.description = description;
-    component.gender = category;
-    component.in_stock = in_stock;
-    component.brand = brand;
+    component.quality_index = qi;
+    component.parent_id = parent_id;
+    component.status = status;
 
     // console.log(component)
     try {
