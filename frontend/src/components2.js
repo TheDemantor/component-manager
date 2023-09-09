@@ -62,6 +62,21 @@ var components = [{
     {
       "researcher_name": "Vaibhav",
       "researcher_mail": "V@gmail.com",
+      "recommendation": "Improve no of RAM",
+      "status": true,
+      "_id": {
+        "$oid": "64f9df2347fd0ab8a341e845"
+      },
+      "createdAt": {
+        "$date": "2023-09-07T14:33:07.395Z"
+      },
+      "updatedAt": {
+        "$date": "2023-09-07T14:33:07.395Z"
+      }
+    },
+    {
+      "researcher_name": "Vaibhav",
+      "researcher_mail": "V@gmail.com",
       "recommendation": "Improce no of ics",
       "status": false,
       "_id": {

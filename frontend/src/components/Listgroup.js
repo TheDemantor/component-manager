@@ -1,5 +1,7 @@
 import {Col, Row, Tab, ListGroup} from 'react-bootstrap';
 import ComponetInCat from './ComponetInCat';
+import Button from 'react-bootstrap/Button';
+import { FaPlus } from 'react-icons/fa';
 
 
 function Listgroup() {
@@ -7,14 +9,22 @@ function Listgroup() {
     <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1" >
       <Row>
         <Col sm={4}>
+          <Row>
           <ListGroup >
-            <ListGroup.Item variant="light" action href="#link1">
+            
+            <ListGroup.Item variant="light" action href="#link1" className='d-flex justify-content-between'>
               Laptop Components
+          <Button variant="outline-warning" size="sm" ><FaPlus/> Create New</Button>
+
             </ListGroup.Item>
-            <ListGroup.Item variant="light" action href="#link2">
+            <ListGroup.Item variant="light" action href="#link2" className='d-flex justify-content-between'>
               Robotic components
+              <Button variant="outline-warning" size="sm"><FaPlus/> Create New</Button>
             </ListGroup.Item>
           </ListGroup>
+          </Row>
+         
+
         </Col>
         <Col sm={8}>
           <Tab.Content>

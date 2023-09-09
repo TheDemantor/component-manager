@@ -36,3 +36,55 @@
     transform: rotate(360deg);
   }
 }
+
+.productSpace{
+  margin-left: 2rem;
+  padding: 1rem;
+  width: 95vw;
+    padding-left: 10vw;
+  /* height: 1000vh; */
+  
+  & #productPresentation{
+    display: flex;
+    height: 100%;
+    .carousel {
+      .slide img {
+        width: 75%;
+        display: inline;
+      }
+
+      & .thumbs {
+        width: 40%;
+      }
+
+      & .slider-wrapper{
+        height: 115rem!important;
+
+        & ul{
+          height: 24rem;
+        }
+      }
+  }
+  & #productDetails{
+    overflow: overlay;
+    height: 80vh;
+    /* border: 2px solid blue; */
+    
+    .ppt{
+      height: 200vh;
+      /* border: 2px solid red; */
+
+    }
+  }
+
+}
+}
+
+/* go back button */
+.gb-btn{position: absolute;
+  left: 0px;
+ }
+
+ .t-left{
+  text-align: left;
+ }
