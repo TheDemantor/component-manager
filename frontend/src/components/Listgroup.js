@@ -2,9 +2,28 @@ import {Col, Row, Tab, ListGroup} from 'react-bootstrap';
 import ComponetInCat from './ComponetInCat';
 import Button from 'react-bootstrap/Button';
 import { FaPlus } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 
-function Listgroup() {
+import { 
+  useCreateComponentMutation, 
+} from '../slices/componentApiSlice';
+
+
+const Listgroup= ()=> {
+//For the mutation 
+const [createComponent, { isLoading: loadingCreate }] = useCreateComponentMutation();
+
+const createComponentHandler = async () => {
+  // console.log("new Components");
+  try {
+    await createComponent();
+    console.log("success")
+    // refetch();
+  } catch (err) {
+    toast.error(err?.data?.message || err.error);
+  }
+};
   return (
     <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1" >
       <Row>
@@ -14,7 +33,7 @@ function Listgroup() {
             
             <ListGroup.Item variant="light" action href="#link1" className='d-flex justify-content-between'>
               Laptop Components
-          <Button variant="outline-warning" size="sm" ><FaPlus/> Create New</Button>
+          <Button variant="outline-warning" size="sm" onClick={createComponentHandler}><FaPlus/> Create New</Button>
 
             </ListGroup.Item>
             <ListGroup.Item variant="light" action href="#link2" className='d-flex justify-content-between'>

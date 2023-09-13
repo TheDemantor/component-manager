@@ -10,7 +10,7 @@ const ComponentTree = ({item, parent}) => {
   // console.log(item, parent);
   const data = {
     "name": item.component_name,
-    "parent": parent===null?"NULL":parent.component_name,
+    "parent": parent,
     "children": [
       {
         "name": "CU",

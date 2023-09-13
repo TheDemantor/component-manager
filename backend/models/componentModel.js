@@ -65,7 +65,7 @@ const componentSchema = new mongoose.Schema(
     },
     parent_id: {
       type: String,
-      default: ''
+      default: ""
     },
     status: {
       type: String,

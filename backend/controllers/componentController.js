@@ -56,7 +56,7 @@ const createComponent = asyncHandler(async (req, res) => {
 // @access  Public
 const updateComponent = asyncHandler(async (req, res) => {
   // console.log(req.body);
-  const { name, image, description, qi, parent_id, status } =
+  const { name, image, description, qi, parent, status } =
     req.body;
 
   const component = await Component.findById(req.params.id);
@@ -65,7 +65,7 @@ const updateComponent = asyncHandler(async (req, res) => {
     component.image = image;
     component.description = description;
     component.quality_index = qi;
-    component.parent_id = parent_id;
+    component.parent_id = parent;
     component.status = status;
 
     // console.log(component)

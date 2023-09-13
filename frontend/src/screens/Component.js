@@ -12,10 +12,10 @@ import EditChild from '../components/EditChild'
 // import { useDispatch, useSelector } from 'react-redux';
 // import Rating from '../components/rating'
 // import axios from 'axios';
-// import { useGetProductsDetailsQuery, useCreateReviewMutation } from "../slices/productApiSlice";
+import { useGetComponentsDetailsQuery, useCreateRecommendationMutation } from "../slices/componentApiSlice";
 // import { addToCart } from '../slices/cartSlice';
-// import Message from "../components/Message";
-// import Loading from "../components/Loading";
+import Message from "../components/Message";
+import Loading from "../components/Loading";
 import { toast } from 'react-toastify';
 
 
@@ -23,40 +23,20 @@ const Component = () => {
   // const item = products.find((p) => p._id === itemId);
 
   const { id: itemId } = useParams();
-  const item = Components.find(i => i._id.$oid === itemId);
-
+  // const item = Components.find(i => i._id=== itemId);
+  
+  
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [recommendation, setRecommendation] = useState('');
-  const parent = item.parent_id === "000" ? null : Components.find(i => i._id.$oid === item.parent_id);
-  // const [rating, setRating] = useState(0);
-  // const [comment, setComment] = useState('');
-
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
-
-  //USING CONTEXT API
-  // const [item, setItem] =useState({});
-
-  // useEffect(()=>{
-  //   const fetchItem = async ()=>{
-  //       const { data } = await axios.get(`/api/products/${itemId}`);
-  //       setItem(data);
-  //   };
-  //   fetchItem();
-  // },[itemId]);
-
-  //USING REDUX 
-
-  // const { data: item, refetch, isLoading, error } = useGetProductsDetailsQuery(itemId);
-
-  // const [createReview, { isLoading: loadingProductReview }] =
-  //   useCreateReviewMutation();
-
-  const checkoutHandler = () => {
-    // navigate('/login?redirect=/shipping')
-  }
-
+  const { data: item, refetch, isLoading, error } = useGetComponentsDetailsQuery(itemId);
+  // const [parent, setParent] = useState("NULL");
+  
+  // const findParent=(pId)=>{
+    // const { data: parent, isLoading: parLoad, error: parErr } = useGetComponentsDetailsQuery(pId);
+    // setParent(parent.component_name);
+  // }
   const submitHandler = async (e) => {
     // e.preventDefault();
 
@@ -81,17 +61,17 @@ const Component = () => {
         Go back</Button>
       </Link>
 
-      {/* {isLoading ? (
+      {isLoading ? (
         <Loading />
       ) : error ? (
         <Message variant="danger"> {error.data?.massage || error.status} </Message>
-      ) : ( */}
+      ) : (
       <>
 
         <Row className='productSpace'>
           <Col md={4} id='productPresentation'>
 
-            <Image src={item.image} alt={item.name} fluid rounded />
+            <Image src={item.image} alt={item.component_name} fluid rounded />
 
           </Col>
           <Col md={8} id='productDetails'>
@@ -100,7 +80,8 @@ const Component = () => {
             <ListGroup variant='flush' className='t-left'>
               <ListGroup.Item >
                 <h2>{item.component_name}</h2>
-                Parent : {parent === null ? "NULL" : parent.component_name}
+                {/* {findParent()} */}
+                {/* Parent : {parent} */}
               </ListGroup.Item>
               <ListGroup.Item>
                 <strong>Quality Index : {item.quality_index}</strong>
@@ -232,11 +213,13 @@ const Component = () => {
             </Row>
           </Col>
           <Col md={8}>
-            <ComponentTree item={item} parent={parent} />
+            <ComponentTree item={item} 
+            // parent={parent} 
+            />
           </Col>
         </Row>
       </>
-
+      )}
     </div>
   )
 }
