@@ -44,7 +44,7 @@ const createComponent = asyncHandler(async (req, res) => {
     component_name: 'Sample name',
     image: "https://i.ytimg.com/",
     quality_index: '100',
-    status:'Future research project',
+    status:'future',
   });
 
   const createdComponent = await component.save();
@@ -104,7 +104,7 @@ const deleteComponent = asyncHandler(async (req, res) => {
 const createRecommendation = asyncHandler(async (req, res) => {
   const {
     name,
-    mail,
+    email,
     recommendation
   } = req.body;
 
@@ -120,7 +120,7 @@ const createRecommendation = asyncHandler(async (req, res) => {
 
     const recommendation_msg = {
       researcher_name: name,
-      researcher_mail: mail,
+      researcher_mail: email,
       recommendation: recommendation,
     };
 
@@ -134,9 +134,9 @@ const createRecommendation = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create new review
-// @route   POST /api/Components/:id/reviews
-// @access  Private
+// @desc    Create new child
+// @route   POST /api/Components/:id/child
+// @access  Public
 const createChild = asyncHandler(async (req, res) => {
   const {id,weight} = req.body;
   const par=req.params.id;
@@ -180,11 +180,10 @@ const createChild = asyncHandler(async (req, res) => {
 // @route   PUT /api/child/:id
 // @access  Public
 const updateChild = asyncHandler(async (req, res) => {
-  const {id, weight} = req.body;
+  const {itemId,id, weight} = req.body;
 
-  const component = await Component.findById(req.params.id);
-  const child = await component.component_child.findIndex((obj => obj.child_id == id));
-  // console.log(child);
+  const component = await Component.findById(itemId);
+  const child = component.component_child.findIndex((obj => obj.child_id == id));
 
   if(child!=-1){
     component.component_child[child].child_weight_in_parent_quality_index=weight;

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, Col, ListGroup, Image, Button } from 'react-bootstrap'
 import { Link, useParams } from 'react-router-dom'
-// import components from '../components2'
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useGetComponentsQuery, useDeleteComponentMutation } from "../slices/componentApiSlice";
 import Loading from "./Loading";
@@ -9,15 +8,12 @@ import Message from "./Message";
 import { toast } from 'react-toastify';
 
 
-
 const ComponetInCat = () => {
   const { keyword = '' } = useParams();
   const { data: items, refetch, isLoading, error } = useGetComponentsQuery({ keyword });
-  // console.log(items);
-  // const items = components;
   const [deleteComponent, { isLoading: loadingDelete }] =    useDeleteComponentMutation();
   const deleteHandler = async (id) => {
-    if (window.confirm('Are you sure')) {
+    if (window.confirm('Are you sure ?')) {
       try {
         const res = await deleteComponent(id);
         toast.success(res.message)

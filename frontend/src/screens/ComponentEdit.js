@@ -136,11 +136,15 @@ const ComponentEdit = () => {
                   <Form.Group controlId='status'>
                     <Form.Label>Status</Form.Label>
                     <Form.Control
-                      type='text'
-                      placeholder='Enter status of component'
+                      as='select' // Use a select element
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                    ></Form.Control>
+                    >
+                      <option value='available'>Available at manufacturing unit</option>
+                      <option value='future'>Future project</option>
+                      <option value='research'>Ongoing research on product</option>
+                    </Form.Control>
+
                   </Form.Group>
 
                   <Form.Group controlId='description'>

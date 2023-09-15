@@ -9,7 +9,7 @@
     "server": "nodemon backend/server.js",
     "data:import": "node backend/seeder.js",
     "data:destroy": "node backend/seeder.js -d",
-    "dev": "concurrently \"npm run start\" \"npm run server\""
+    "dev": "concurrently  \"npm run server\" \"npm run start\""
   },
   "author": "",
   "license": "ISC",

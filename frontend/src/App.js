@@ -5,6 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './screens/Home'
 import Component from './screens/Component'
 import ComponentEdit from './screens/ComponentEdit'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import Navbar from './components/Navbar'
 
@@ -24,6 +27,7 @@ function App() {
           <Route path='/:id' element={<Component/>}></Route>
           <Route path='/:id/edit' element={<ComponentEdit/>}></Route>
         </Routes>
+        <ToastContainer />
           
       </Router>
     </div>

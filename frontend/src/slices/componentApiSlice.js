@@ -11,12 +11,14 @@ const componentApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5,
             providesTags: ['Components'],
         }),
+
         getComponentsDetails: builder.query({
             query: (id) => ({
                 url:`${COMPONENT_URL}/${id}`,
             }),
             keepUnusedDataFor: 5
         }),
+
         createComponent: builder.mutation({
             query: () => ({
                 url:COMPONENT_URL,
@@ -24,6 +26,7 @@ const componentApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Components']
         }),
+
         updateComponent: builder.mutation({
             query: (data) => ({
               url: `${COMPONENT_URL}/${data.componentId}`,
@@ -32,6 +35,7 @@ const componentApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Components'],
         }),
+
         uploadComponentImage: builder.mutation({
             query: (data) => ({
               url: `api/upload`,
@@ -39,6 +43,7 @@ const componentApiSlice = apiSlice.injectEndpoints({
               body: data,
             })
         }),
+
         deleteComponent: builder.mutation({
             query: (ComponentId) => ({
               url: `${COMPONENT_URL}/${ComponentId}`,
@@ -46,13 +51,40 @@ const componentApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['Components'],
         }),
+
         createRecommendation: builder.mutation({
             query: (data) => ({
-              url: `${COMPONENT_URL}/${data.itemId}/reviews`,
+              url: `${COMPONENT_URL}/${data.itemId}/recommendation`,
               method: 'POST',
               body: data,
             }),
             invalidatesTags: ['Components'],
+        }),
+
+        createChild: builder.mutation({
+            query: (data) => ({
+              url: `${COMPONENT_URL}/${data.itemId}/child`,
+              method: 'POST',
+              body: data,
+            }),
+            invalidatesTags: ['Components'],
+        }),
+
+        updateChild: builder.mutation({
+            query: (data, id) => ({
+              url: `${COMPONENT_URL}/${data.itemId}/child`,
+              method: 'PUT',
+              body: data,
+            }),
+            invalidatesTags: ['Components'],
+        }),
+
+        deleteChild: builder.mutation({
+            query: (ChildId) => ({
+              url: `${COMPONENT_URL}/${ChildId}/child`,
+              method: 'DELETE',
+            }),
+            providesTags: ['Components'],
         }),
 
     })
@@ -66,6 +98,9 @@ export const {
     useUploadComponentImageMutation,
     useDeleteComponentMutation,
     useCreateRecommendationMutation,
+    useCreateChildMutation,
+    useUpdateChildMutation,
+    useDeleteChildMutation,   
     
 } 
     = componentApiSlice;
