@@ -50,7 +50,7 @@ const createComponentHandler = async () => {
             <Tab.Pane eventKey="#link1">
               <ComponetInCat/>
             </Tab.Pane>
-            <Tab.Pane eventKey="#link2">Tab pane content 2</Tab.Pane>
+            <Tab.Pane eventKey="#link2"></Tab.Pane>
           </Tab.Content>
         </Col>
       </Row>

@@ -1,18 +1,50 @@
 import { useState } from 'react';
 import { Col, Row, ListGroup, Card, Button, Form, Image, Container, Dropdown } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
+
 import { MdOutlinePending } from 'react-icons/md';
 import { BsFillBookmarkCheckFill } from 'react-icons/bs';
-
 
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 import ComponentTree from '../components/ComponentTree'
-import EditChild from '../components/EditChild'
-import { useGetComponentsQuery, useGetComponentsDetailsQuery, useCreateRecommendationMutation, useDeleteChildMutation, useUpdateChildMutation } from "../slices/componentApiSlice";
+import {
+  useGetComponentsQuery,
+  useGetComponentsDetailsQuery,
+  useCreateRecommendationMutation,
+  useDeleteChildMutation,
+  useUpdateChildMutation,
+  useConnectChildMutation,
+  useFindChildrenQuery
+} from "../slices/componentApiSlice";
 import Message from "../components/Message";
 import Loading from "../components/Loading";
+import BackBtn from "../components/BackBtn";
 import { toast } from 'react-toastify';
+import Recommendations from '../components/Recommendations';
+
+function calcQI(children) {
+  if (children.length === 0) {
+    return 0;
+  }
+
+  let weightedSum = 0;
+  let totalWeight = 0;
+
+  for (const child of children) {
+    const { weight, quality_index } = child;
+    weightedSum += weight * quality_index;
+    totalWeight += weight;
+  }
+
+  if (totalWeight === 0) {
+    return 0; // Avoid division by zero.
+  }
+
+  const weightedMean = weightedSum / totalWeight;
+  return weightedMean;
+}
+
 
 const Component = () => {
 
@@ -24,11 +56,13 @@ const Component = () => {
 
   const { data: allItems, isLoading: itemsLoading, error: itemsError } = useGetComponentsQuery({});
   const { data: item, refetch, isLoading, error } = useGetComponentsDetailsQuery(itemId);
-  const [createRecommendation, { isLoading: loadingRecommendations }] =
-    useCreateRecommendationMutation();
+  const { data: children, isLoading: childrenLoading, refetch: childrenRefetch, error: childrenError } = useFindChildrenQuery(itemId);
+  const [createRecommendation, { isLoading: loadingRecommendations }] = useCreateRecommendationMutation();
+  // console.log(children)
+  const [deleteChild] = useDeleteChildMutation();
+  const [updateChild] = useUpdateChildMutation();
+  const [connectChild, { isLoading: loadingConnectChild }] = useConnectChildMutation();
 
-  const [deleteChild, { isLoading: loadingDelete }] = useDeleteChildMutation();
-  const [updateChild, { isLoading: loadingUpdate }] = useUpdateChildMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -46,8 +80,27 @@ const Component = () => {
     }
   };
 
-  const connectChildHandler = async (child_id)=> {
-    console.log("connect");
+  const connectChildHandler = async (child_id) => {
+    let wt = prompt("Please enter the weight of child in quality index");
+    if (wt >= 0 && wt <= 100) {
+
+      try {
+        const res = await connectChild({
+          id: child_id,
+          itemId: itemId,
+          weight: wt
+        });
+        // console.log(res);
+        toast.success(res.data.message);
+        refetch();
+        childrenRefetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+    else {
+      toast.error("Weight must be in range [0, 100]");
+    }
   }
 
   const editHandler = async (id, weight) => {
@@ -60,9 +113,10 @@ const Component = () => {
           id: id,
           weight: wt
         });
-        console.log(res);
+        // console.log(res);\
         toast.success(res.data.message);
         refetch();
+        childrenRefetch();
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -71,9 +125,11 @@ const Component = () => {
   const deleteHandler = async (id) => {
     if (window.confirm('Are you sure ?')) {
       try {
-        const res = await deleteChild(id);
-        toast.success(res.message)
+        const data = { id: id, itemId: itemId };
+        const res = await deleteChild(data);
+        toast.success(res.data.message)
         refetch();
+        childrenRefetch();
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -85,6 +141,7 @@ const Component = () => {
       <Link to='/' ><Button variant="outline-dark" className='btn gb-btn btn-light mx-1 my-3' >
         Go back</Button>
       </Link>
+      <BackBtn />
 
       {isLoading ? (
         <Loading />
@@ -109,7 +166,11 @@ const Component = () => {
                   {/* Parent : {parent} */}
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <strong>Quality Index : {item.quality_index}</strong>
+                  <strong>Quality Index :    &nbsp;
+                    {
+                      !childrenLoading && (children.length === 0 ? item.quality_index : calcQI(children).toFixed(2))
+                    }
+                  </strong>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   Current Status : {item.status === "research" ? "Component under research." : item.status === "future" ? "This component is under future plan." : "Component is ready"}
@@ -140,7 +201,7 @@ const Component = () => {
                               <Button
                                 variant='outline-success'
                                 className='btn-sm'
-                                onClick={() => connectChildHandler(comp.child_id)}
+                                onClick={() => connectChildHandler(comp._id)}
                               >
                                 {comp.component_name}
 
@@ -159,17 +220,19 @@ const Component = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        {item.component_child.map((ch, ind) => (
+                        {!childrenLoading && (children.map((ch, ind) => (
                           <Dropdown.Item eventKey={ind} className='d-flex justify-content-start'>
                             <Button
                               variant='outline-warning'
                               className='btn-sm'
-                              onClick={() => editHandler(ch.child_id, ch.child_weight_in_parent_quality_index)}
+                              onClick={() => editHandler(ch.child_id, ch.weight)}
                             >
-                              {ch.child_id}
+
+                              {loadingConnectChild ? (<Loading />) : <>{ch.component_name}</>}
 
                             </Button>
                           </Dropdown.Item>
+                        )
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
@@ -182,18 +245,21 @@ const Component = () => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        {item.component_child.map((ch, ind) => (
+                        {!childrenLoading && (children.map((ch, ind) => (
                           <Dropdown.Item eventKey={ind} className='d-flex justify-content-start'>
+
+
                             <Button
                               variant='outline-danger'
                               className='btn-sm'
                               onClick={() => deleteHandler(ch.child_id)}
                             >
-                              {ch.child_id}
+                              {ch.component_name}
 
                             </Button>
 
                           </Dropdown.Item>
+                        )
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
@@ -204,7 +270,7 @@ const Component = () => {
             </Col>
           </Row>
           <Row>
-            <Col md={4} className='text-left px-4'>
+            <Col md={5} className='text-left px-4'>
               {item.status === "research" && (<Row>
                 <h2>Write a Recommendation</h2>
 
@@ -275,11 +341,12 @@ const Component = () => {
                   </ListGroup>
                 </Container>
               </Row>
+              {/* {!isLoading && (<Recommendations item={item}/>)} */}
             </Col>
-            <Col md={8}>
-              <ComponentTree item={item}
-              // parent={parent} 
-              />
+            <Col md={7}>
+              {!childrenLoading && <ComponentTree item={item}
+                children={children}
+              />}
             </Col>
           </Row>
         </>

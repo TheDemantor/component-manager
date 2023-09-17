@@ -11,7 +11,8 @@ import {
   createRecommendation,
   createChild,
   updateChild,
-  deleteChild
+  deleteChild,
+  findChildren
  } from '../controllers/componentController.js'
 
 router.route('/').get(getComponents).post(createComponent);
@@ -20,7 +21,7 @@ router.route('/:id').get(getComponentById).put(updateComponent).delete(deleteCom
 
 router.route('/:id/recommendation').post( createRecommendation);
 
-router.route('/:id/child').post(createChild).put(updateChild).delete(deleteChild);
+router.route('/:id/child').get(findChildren).post(createChild).put(updateChild).delete(deleteChild);
 
 
 ;

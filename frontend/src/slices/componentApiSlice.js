@@ -61,7 +61,7 @@ const componentApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: ['Components'],
         }),
 
-        createChild: builder.mutation({
+        connectChild: builder.mutation({
             query: (data) => ({
               url: `${COMPONENT_URL}/${data.itemId}/child`,
               method: 'POST',
@@ -71,7 +71,7 @@ const componentApiSlice = apiSlice.injectEndpoints({
         }),
 
         updateChild: builder.mutation({
-            query: (data, id) => ({
+            query: (data) => ({
               url: `${COMPONENT_URL}/${data.itemId}/child`,
               method: 'PUT',
               body: data,
@@ -80,11 +80,19 @@ const componentApiSlice = apiSlice.injectEndpoints({
         }),
 
         deleteChild: builder.mutation({
-            query: (ChildId) => ({
-              url: `${COMPONENT_URL}/${ChildId}/child`,
+            query: (data) => ({
+              url: `${COMPONENT_URL}/${data.itemId}/child`,
               method: 'DELETE',
+              body: data
             }),
             providesTags: ['Components'],
+        }),
+
+        findChildren: builder.query({
+            query: (id) => ({
+                url: `${COMPONENT_URL}/${id}/child`,
+            }),
+            keepUnusedDataFor: 5,
         }),
 
     })
@@ -98,9 +106,10 @@ export const {
     useUploadComponentImageMutation,
     useDeleteComponentMutation,
     useCreateRecommendationMutation,
-    useCreateChildMutation,
+    useConnectChildMutation,
     useUpdateChildMutation,
     useDeleteChildMutation,   
+    useFindChildrenQuery
     
 } 
     = componentApiSlice;
