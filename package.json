@@ -9,7 +9,8 @@
     "server": "nodemon backend/server.js",
     "data:import": "node backend/seeder.js",
     "data:destroy": "node backend/seeder.js -d",
-    "dev": "concurrently  \"npm run server\" \"npm run start\""
+    "dev": "concurrently  \"npm run server\" \"npm run start\"",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "",
   "license": "ISC",
