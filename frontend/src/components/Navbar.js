@@ -1,4 +1,5 @@
-import {Container, Navbar, Form, Button} from 'react-bootstrap';
+import {Container, Navbar, Form, Button, Image} from 'react-bootstrap';
+import SearchBar from './SearchBar';
 
 function Nav() {
   return (
@@ -6,13 +7,7 @@ function Nav() {
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
           <Navbar.Brand href="#home">
-            <img
-              alt=""
-              src="./logo.png"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />{' '}
+           
            <span className='text-warning'>
             <strong>ACE</strong> - Manufacturing India
             </span> 
@@ -25,6 +20,7 @@ function Nav() {
               aria-label="Search"
             />
             <Button variant="outline-warning">Search</Button>
+            <SearchBar/>
           </Form>
         </Container>
       </Navbar>
