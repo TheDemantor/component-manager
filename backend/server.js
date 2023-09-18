@@ -6,7 +6,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 
 import cors from 'cors';
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 
 connectDB();    //Connect to mongoDB
 
@@ -24,23 +24,10 @@ app.use('/api/components', componentRoutes);
 app.use('/api/upload', uploadRoutes);
 
 const __dirname = path.resolve();
-// app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-// app.get('/', (req, res) => {
-//   res.send('API is running....');
-// });
+app.get('/', (req, res) => {
+  res.send('API is running....');
+});
 
-if (process.env.NODE_ENV === 'production') {
-  app.use('/uploads', express.static('/var/data/uploads'));
-  app.use(express.static(path.join(__dirname, '/frontend/build')));
-
-  app.get('*', (req, res) =>
-      res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
-  );
-} else {
-  app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-  app.get('/', (req, res) => {
-      res.send('API is running....');
-  });
-}
 app.listen(port, () => { console.log(`Server is running on http://localhost:${port}`) });
