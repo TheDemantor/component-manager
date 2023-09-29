@@ -79,6 +79,7 @@ const Component = () => {
       toast.error(err?.data?.message || err.error);
     }
   };
+  
 
   const connectChildHandler = async (child_id) => {
     let wt = prompt("Please enter the weight of child in quality index");
