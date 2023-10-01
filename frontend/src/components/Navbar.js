@@ -6,7 +6,7 @@ function Nav() {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
            
            <span className='text-warning'>
             <strong>ACE</strong> - Manufacturing India

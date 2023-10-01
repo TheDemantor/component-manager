@@ -113,10 +113,10 @@ const createRecommendation = asyncHandler(async (req, res) => {
   if (component) {
     const researched = component.status === "research";
 
-    if (!researched) {
-      res.status(400);
-      throw new Error('Currently component is not being reserched');
-    }
+    // if (!researched) {
+    //   res.status(400);
+    //   throw new Error('Currently component is not being reserched');
+    // }
 
     const recommendation_msg = {
       researcher_name: name,

@@ -272,7 +272,7 @@ const Component = () => {
           </Row>
           <Row>
             <Col md={5} className='text-left px-4'>
-              {item.status === "research" && (<Row>
+              {(<Row>
                 <h2>Write a Recommendation</h2>
 
                 {loadingRecommendations && <Loading />}
