@@ -26,7 +26,7 @@ app.use('/api/upload', uploadRoutes);
 const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === 'production') {
-  app.use('/uploads', express.static('/var/data/uploads'));
+  app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
   app.get('*', (req, res) =>

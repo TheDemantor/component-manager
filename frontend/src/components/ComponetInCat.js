@@ -66,7 +66,7 @@ const ComponetInCat = () => {
           ))
           }
         </ListGroup>
-      )};
+      )}
     </div>
   )
 }
